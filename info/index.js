@@ -1,0 +1,1 @@
+export const Tagline = `Three word Tagline`

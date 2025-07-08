@@ -27,6 +27,6 @@ body {
 
 @layer components{
   .nav-item {
-    @apply font-semibold text-gray-300 cursor-pointer hover:text-gray-400 transition-all bg-slate-800 px-2 py-0.5 rounded
+    @apply font-semibold text-gray-300 cursor-pointer hover:text-gray-400 transition-all rounded
   }
 }
