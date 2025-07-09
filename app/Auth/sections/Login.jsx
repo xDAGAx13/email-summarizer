@@ -1,31 +1,26 @@
-import React from "react";
+'use client'
+import React, { useState } from "react";
+import { FaGoogle } from "react-icons/fa";
+import { PiMicrosoftOutlookLogoFill } from "react-icons/pi";
+import {useSession, signIn, signOut} from 'next-auth/react'
 
 const Login = () => {
+  const {data: session} = useSession()
+
   return (
-    <div className="flex flex-wrap items-center justify-center border-2 border-gray-200 shadow-2xl rounded-2xl mx-20 lg:mx-100 py-10">
+    <div className="h-100 flex flex-col gap-10 items-center justify-center border-2 border-gray-200 shadow-2xl rounded-2xl mx-20 lg:mx-100 py-10">
       <div className="mx-auto  w-full  justify-center mb-5">
         <h1 className="text-center text-4xl font-semibold text-purple-400/80">
-          Login
+          Login / Register
         </h1>
       </div>
-      <div className="rounded justify-center items-center gap-4">
-        <form className="flex flex-col gap-3 w-auto p">
-          <input
-            className="pl-5 px-5 text-lg py-1 font-medium bg-gray-400 rounded"
-            placeholder="Enter Your Email"
-          ></input>
-          <input
-            className="pl-5 px-5 text-lg py-1 font-medium bg-gray-400 rounded"
-            placeholder="Password"
-          ></input>
-          <p className="text-center font-semibold">OR</p>
-
-          
-          {/* Insert Google Image */}
-          <button className="bg-white text-black py-2 rounded-2xl font-bold hover:bg-gray-200 transition-all cursor-pointer">
-            Sign-In With Google
+      <div className="flex flex-col rounded justify-center items-center gap-4">
+          <button className="flex items-center gap-2 bg-white px-3 text-black py-3 rounded-2xl font-bold hover:bg-gray-200 transition-all cursor-pointer">
+            Sign-In With Google <FaGoogle className="size-5 transition-all"/>
           </button>
-        </form>
+          <button className="flex items-center gap-2 bg-white px-3 text-black py-3 rounded-2xl font-bold hover:bg-gray-200 transition-all cursor-pointer">
+            Sign-In With Outlook <PiMicrosoftOutlookLogoFill className="size-6 transition-all"/>
+          </button>       
       </div>
     </div>
   );

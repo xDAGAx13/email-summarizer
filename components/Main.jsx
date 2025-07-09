@@ -1,4 +1,4 @@
-import { Tagline } from '@/info'
+import { Tagline } from '../info'
 import React from 'react'
 
 const Main = () => {
