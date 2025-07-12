@@ -5,12 +5,17 @@ import { PiMicrosoftOutlookLogoFill } from "react-icons/pi";
 import auth from "../../firebase";
 import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
-const Login = () => {
+const Login = ({onTokenExtracted}) => {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [name, setName] = useState("");
+  const [googleTok, setGoogleTok] = useState(null)
+
+  provider.addScope('https://www.googleapis.com/auth/gmail.readonly')
+  provider.addScope('https://www.googleapis.com/auth/gmail.metadata')
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth,(user)=>{
@@ -25,7 +30,13 @@ const Login = () => {
 
   const signUpWithGoogle = async () => {
     try {
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      const credential = GoogleAuthProvider.credentialFromResult(result)
+      const token = credential?.accessToken;
+      onTokenExtracted(token);
+      setGoogleTok(token);
+      Cookies.set("token", token, {expires:7})
+      
     } catch (e) {
       console.error("Cannot Sign in", e);
     }

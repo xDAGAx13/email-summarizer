@@ -1,1 +1,1 @@
-export const Tagline = `Three word Tagline`
+export const Tagline = `Summarize Your Mails with Just a click`

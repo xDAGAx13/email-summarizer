@@ -1,14 +1,16 @@
 "use client";
 import Navbar from "../../components/Navbar";
-import React from "react";
+import React, { useState } from "react";
 import Login from "./sections/Login";
 
 const signin = () => {
+  const [token, setToken] = useState(null)
   return (
     <div>
       <div className="background"></div>
       <Navbar />
-      <Login />
+      <Login onTokenExtracted={setToken}/>
+      
     </div>
   );
 };
