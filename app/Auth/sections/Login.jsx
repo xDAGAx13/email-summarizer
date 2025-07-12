@@ -3,53 +3,59 @@ import React, { useEffect, useState } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { PiMicrosoftOutlookLogoFill } from "react-icons/pi";
 import auth from "../../firebase";
-import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
+import {
+  signInWithPopup,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signOut,
+} from "firebase/auth";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { useToken } from "../../../context/TokenContext";
 
-const Login = ({onTokenExtracted}) => {
+const Login = ({ onTokenExtracted }) => {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [name, setName] = useState("");
-  const [googleTok, setGoogleTok] = useState(null)
+  const [googleTok, setGoogleTok] = useState(null);
 
-  provider.addScope('https://www.googleapis.com/auth/gmail.readonly')
-  provider.addScope('https://www.googleapis.com/auth/gmail.metadata')
+
+  const {setToken} = useToken();
+  provider.addScope("https://www.googleapis.com/auth/gmail.readonly");
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth,(user)=>{
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setIsSignedIn(true);
         setName(user.email);
       }
     });
-    return ()=>unsubscribe();
-    
-  },[]);
+    return () => unsubscribe();
+  }, []);
+  
 
   const signUpWithGoogle = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
-      const credential = GoogleAuthProvider.credentialFromResult(result)
+      const credential = GoogleAuthProvider.credentialFromResult(result);
       const token = credential?.accessToken;
       onTokenExtracted(token);
       setGoogleTok(token);
-      Cookies.set("token", token, {expires:7})
-      
+      setToken(token);
     } catch (e) {
       console.error("Cannot Sign in", e);
     }
   };
 
-  const handleLogout = async()=>{
-    try{
+  const handleLogout = async () => {
+    try {
       signOut(auth);
       setIsSignedIn(false);
-    }catch(e){
-      console.error('Cannot Sign Out User', e)
+    } catch (e) {
+      console.error("Cannot Sign Out User", e);
     }
-  }
+  };
 
   return (
     <div className="h-auto flex flex-col gap-7 items-center justify-center border-2 border-gray-200 shadow-2xl rounded-2xl mx-20 lg:mx-100 py-10">
@@ -62,7 +68,10 @@ const Login = ({onTokenExtracted}) => {
             <p className="text-center mt-5 font-medium text-xl mb-4">
               You are already signed in with {name}
             </p>
-            <button onClick={()=>router.push('/')} className="bg-gray-700 py-1 font-bold px-3 rounded-2xl cursor-pointer hover:bg-gray-600 transition-all">
+            <button
+              onClick={() => router.push("/")}
+              className="bg-gray-700 py-1 font-bold px-3 rounded-2xl cursor-pointer hover:bg-gray-600 transition-all"
+            >
               Back to Em-Sum
             </button>
           </div>
@@ -79,7 +88,14 @@ const Login = ({onTokenExtracted}) => {
           Sign-In With Outlook{" "}
           <PiMicrosoftOutlookLogoFill className="size-6 transition-all" />
         </button>
-        {isSignedIn&&<button onClick={handleLogout} className="bg-neutral-700 px-4 py-2 transition-all rounded-2xl cursor-pointer hover:bg-neutral-800">Logout</button>}
+        {isSignedIn && (
+          <button
+            onClick={handleLogout}
+            className="bg-neutral-700 px-4 py-2 transition-all rounded-2xl cursor-pointer hover:bg-neutral-800"
+          >
+            Logout
+          </button>
+        )}
       </div>
     </div>
   );

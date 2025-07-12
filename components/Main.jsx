@@ -1,16 +1,14 @@
-
 import { onAuthStateChanged } from "firebase/auth";
 import { Tagline } from "../info";
 import React, { useEffect, useState } from "react";
 import auth from "../app/firebase";
 import DatePicker from "react-datepicker";
-import Form from "../utils/Form";
-import { cookies } from "next/headers";
+import Form from "./Form";
+import { useToken } from "../context/TokenContext";
 
 const Main = () => {
   const [name, setName] = useState("");
-  const cookieStore = cookies();
-  const token = cookieStore.get("token")?.value;
+  const { token } = useToken();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -21,6 +19,11 @@ const Main = () => {
     });
     return () => unsubscribe();
   }, []);
+
+  
+
+
+
   return (
     <div className="w-auto mx-10 flex items-center flex-col">
       <div className="mb-10">
@@ -31,9 +34,20 @@ const Main = () => {
           {Tagline}
         </p>
       </div>
-      {name ? <Form /> : <div>
-        <h1 className="text-2xl text-center font-semibold text-neutral-500">Please <a href="/auth" className="hover:underline">Sign in</a> to use EMSum</h1>
-        </div>}
+      {name ? (
+        <Form />
+      ) : (
+        <div>
+          <h1 className="text-2xl text-center font-semibold text-neutral-500">
+            Please{" "}
+            <a href="/auth" className="hover:underline">
+              Sign in
+            </a>{" "}
+            to use EMSum
+          </h1>
+        </div>
+      )}
+
     </div>
   );
 };

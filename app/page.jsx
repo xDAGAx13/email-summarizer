@@ -1,4 +1,4 @@
-'use client'
+"use client"
 import Main from '../components/Main'
 import Navbar from '../components/Navbar'
 import React from 'react'
