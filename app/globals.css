@@ -30,6 +30,14 @@ body {
     @apply font-semibold text-gray-300 cursor-pointer hover:text-gray-400 transition-all rounded
   }
   .background{
-    @apply absolute inset-0 -z-10 h-full w-full items-center px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]
+    @apply absolute inset-0 -z-10 h-full w-full items-center px-5  [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]
+  }
+
+  .h1{
+    @apply text-3xl lg:text-5xl  font-bold text-neutral-400 text-center mb-5
+  }
+
+  .para-subheading{
+    @apply text-2xl text-center font-semibold text-neutral-500
   }
 }

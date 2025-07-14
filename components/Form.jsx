@@ -3,13 +3,17 @@ import { useToken } from "../context/TokenContext";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Airesponse from "./Airesponse";
 
 const Form = () => {
   const [day, setDay] = useState(new Date());
   const [today, setToday] = useState(false);
+  const [emails, setEmails] = useState([])
+  const [loading, setLoading] = useState(false)
   const { token } = useToken();
 
   const fetchEmails = async (accessToken) => {
+    setLoading(true)
   let from, to;
 
   if (today) {
@@ -26,7 +30,7 @@ const Form = () => {
   const before = to.toISOString().split("T")[0].replace(/-/g, "/");
 
   const res = await fetch(
-    `https://www.googleapis.com/gmail/v1/users/me/messages?q=after:${after} before:${before}&maxResults=20`,
+    `https://www.googleapis.com/gmail/v1/users/me/messages?q=after:${after} before:${before}&maxResults=10`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -34,10 +38,14 @@ const Form = () => {
     }
   );
   const data = await res.json();
+  const fetchedEmails = []
 
   for (const msg of data.messages || []) {
-    await getFullMessage(msg.id, accessToken);
+    const email = await getFullMessage(msg.id, accessToken);
+    if (email) fetchedEmails.push(email);
   }
+  setEmails(fetchedEmails);
+  setLoading(false);
 };
 
 
@@ -101,12 +109,12 @@ const Form = () => {
     } catch (e) {
       console.warn(`Could not decode body for message ${messageId}`);
     }
-
-    return console.log({ subject, from, date, body });
+    
+    return { subject, from, date, body };
   };
 
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-center gap-6 p-4 text-xl">
+    <div className="flex flex-col items-center justify-center gap-6 p-4 text-xl">
       {/* Single Day Picker */}
       <div className="flex flex-col items-center">
         <label className="mb-2 font-semibold text-gray-700">Day</label>
@@ -130,10 +138,12 @@ const Form = () => {
       {!token && <p>Please Sign in Again</p>}
       <button
         onClick={() => fetchEmails(token)}
-        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded cursor-pointer hover:bg-blue-700"
       >
         Fetch Email Data
       </button>
+      {loading&&<p>Loading your mails</p>}
+      {emails&&<Airesponse emails={emails}/>}
     </div>
   );
 };

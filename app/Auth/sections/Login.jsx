@@ -58,14 +58,14 @@ const Login = ({ onTokenExtracted }) => {
   };
 
   return (
-    <div className="h-auto flex flex-col gap-7 items-center justify-center border-2 border-gray-200 shadow-2xl rounded-2xl mx-20 lg:mx-100 py-10">
+    <div className="h-auto flex flex-col gap-7 items-center justify-center shadow-2xl rounded-2xl mx-20 lg:mx-100 py-10">
       <div className="mx-auto w-full justify-center mb-5">
-        <h1 className="text-center text-4xl font-semibold text-purple-400/80">
+        <h1 className="h1">
           Login / Register
         </h1>
         {isSignedIn && (
           <div className="text-center ">
-            <p className="text-center mt-5 font-medium text-xl mb-4">
+            <p className="para-subheading mb-5">
               You are already signed in with {name}
             </p>
             <button

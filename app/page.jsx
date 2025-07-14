@@ -5,11 +5,12 @@ import React from 'react'
 
 const page = () => {
   return (
-    <div className='bg-transparent'>
-      <div className="background"></div>
+    <div className='bg-transparent mb-10'>
+      <div className=''>
       <Navbar/>
       <Main/>
-      <p></p>
+      </div>
+      
     </div>
   )
 }

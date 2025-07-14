@@ -7,7 +7,7 @@ const signin = () => {
   const [token, setToken] = useState(null)
   return (
     <div>
-      <div className="background"></div>
+      <div className=""></div>
       <Navbar />
       <Login onTokenExtracted={setToken}/>
       
