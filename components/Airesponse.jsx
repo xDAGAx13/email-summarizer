@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { GoogleGenAI } from "@google/genai";
-import ReactMarkdown from 'react-markdown';
-
+import ReactMarkdown from "react-markdown";
 
 const Airesponse = ({ emails }) => {
   const ai = new GoogleGenAI({
     apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY,
   });
   const [aiReply, setAiReply] = useState("");
+  const [loading, setLoading] = useState(false)
 
   const getGeminiResponse = async () => {
+    setLoading(true)
     const formattedEmails = emails
       .map(
         (email, i) =>
@@ -22,8 +23,7 @@ const Airesponse = ({ emails }) => {
       model: "gemini-2.5-flash",
       contents: formattedEmails,
       config: {
-        systemInstruction:
-          `You are an intelligent AI assistant helping a user understand and act on their daily email summary.
+        systemInstruction: `You are an intelligent AI assistant helping a user understand and act on their daily email summary.
 
 Please do the following:
 
@@ -49,23 +49,23 @@ Be clear, professional, and easy to skim and don't exceed 120 words.
       },
     });
     setAiReply(response.text);
+    setLoading(false)
   };
   return (
     <div className="flex flex-col gap-4 justify-center items-center">
       <button
-        className="bg-red-400 py-1 px-2 rounded-xl cursor-pointer hover:bg-red-500"
+        className="bg-gray-600 py-2 px-3 rounded-lg cursor-pointer hover:bg-neutral-800 transition-all duration-300"
         onClick={getGeminiResponse}
       >
         Get AI Response
       </button>
-      <div className="dark:bg-neutral-900 border-2 border-gray-300 dark:border-gray-700 rounded-xl p-6 shadow-md max-w-4xl w-full">
-        {aiReply && (
-          <p className="text-neutral-400 whitespace-pre-wrap">
-  {aiReply}
-</p>
-
-        )}
-      </div>
+      {loading? <div className="flex justify-center">
+          <div className="w-5 h-5 border-2 border-neutral-600 border-t-transparent rounded-full animate-spin"></div>
+        </div>:aiReply && (
+        <div className="dark:bg-neutral-900 border-2 border-gray-300 dark:border-gray-700 rounded-xl p-6 shadow-md max-w-4xl w-full">
+          <p className="text-neutral-400 whitespace-pre-wrap">{aiReply}</p>
+        </div>
+      )}
     </div>
   );
 };

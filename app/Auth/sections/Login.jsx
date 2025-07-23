@@ -10,7 +10,6 @@ import {
   signOut,
 } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
 import { useToken } from "../../../context/TokenContext";
 
 const Login = ({ onTokenExtracted }) => {
@@ -18,18 +17,19 @@ const Login = ({ onTokenExtracted }) => {
   const router = useRouter();
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [name, setName] = useState("");
-  const [googleTok, setGoogleTok] = useState(null);
 
 
   const {setToken} = useToken();
+  const token = useToken()
   provider.addScope("https://www.googleapis.com/auth/gmail.readonly");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
+      if (token) {
         setIsSignedIn(true);
         setName(user.email);
       }
+
     });
     return () => unsubscribe();
   }, []);
@@ -41,8 +41,8 @@ const Login = ({ onTokenExtracted }) => {
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const token = credential?.accessToken;
       onTokenExtracted(token);
-      setGoogleTok(token);
       setToken(token);
+      setIsSignedIn(true);
     } catch (e) {
       console.error("Cannot Sign in", e);
     }
@@ -52,6 +52,7 @@ const Login = ({ onTokenExtracted }) => {
     try {
       signOut(auth);
       setIsSignedIn(false);
+      setName(null);
     } catch (e) {
       console.error("Cannot Sign Out User", e);
     }
@@ -63,7 +64,7 @@ const Login = ({ onTokenExtracted }) => {
         <h1 className="h1">
           Login / Register
         </h1>
-        {isSignedIn && (
+        {isSignedIn ? (
           <div className="text-center ">
             <p className="para-subheading mb-5">
               You are already signed in with {name}
@@ -75,7 +76,7 @@ const Login = ({ onTokenExtracted }) => {
               Back to Em-Sum
             </button>
           </div>
-        )}
+        ):<p className="para-subheading mb-5">Please Sign in with the options</p>}
       </div>
       <div className="flex flex-col rounded justify-center items-center gap-4">
         <button
@@ -91,7 +92,7 @@ const Login = ({ onTokenExtracted }) => {
         {isSignedIn && (
           <button
             onClick={handleLogout}
-            className="bg-neutral-700 px-4 py-2 transition-all rounded-2xl cursor-pointer hover:bg-neutral-800"
+            className="bg-neutral-700 font-semibold px-4 py-2 transition-all rounded-2xl cursor-pointer hover:bg-neutral-800"
           >
             Logout
           </button>

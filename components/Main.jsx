@@ -34,9 +34,19 @@ const Main = () => {
           {Tagline}
         </p>
       </div>
-      {name ? (
+      { token ? (
         <Form />
-      ) : (
+      ) : name? (
+        <div>
+          <h1 className="text-2xl text-center font-semibold text-neutral-500">
+            Please{" "}
+            <a href="/auth" className="hover:underline">
+              sign in again
+            </a>{" "}
+            to gain access to your mails
+          </h1>
+        </div>
+      ):(
         <div>
           <h1 className="text-2xl text-center font-semibold text-neutral-500">
             Please{" "}
